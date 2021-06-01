@@ -1,6 +1,7 @@
 'use strict';
 
 const { resolve } = require('path');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
   entry: ['babel-polyfill', './app/main'],
@@ -13,6 +14,10 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     extensions: ['.js', '.jsx'],
+    fallback: {
+      fs: false,
+      net: false,
+    },
   },
   module: {
     rules: [
@@ -27,4 +32,5 @@ module.exports = {
       },
     ],
   },
+  plugins: [new NodePolyfillPlugin()],
 };
