@@ -11,11 +11,13 @@ export default class Home extends React.Component {
       checked: [],
       formInput: {},
       loaded: false,
+      formActive: false,
       requiredError: false,
       removeError: false,
     };
     this.toggleOneCheck = this.toggleOneCheck.bind(this);
     this.toggleAllChecks = this.toggleAllChecks.bind(this);
+    this.toggleForm = this.toggleForm.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -23,20 +25,29 @@ export default class Home extends React.Component {
   toggleAllChecks() {
     let copyArr = [...this.state.checked];
     if (
-      this.state.checked.every((elm) => elm === false) ||
-      this.state.checked.every((elm) => elm === true)
+      this.state.checked.every((elm) => !elm) ||
+      this.state.checked.every((elm) => elm)
     ) {
       copyArr = copyArr.map((elm) => !elm);
     } else {
       copyArr = copyArr.map((elm) => true);
     }
-    this.setState({ checked: copyArr });
+    this.setState({ checked: copyArr, removeError: false });
   }
 
-  toggleOneCheck(index = 1) {
+  toggleOneCheck(event) {
+    const idx = event.target.value;
     const copyArr = [...this.state.checked];
-    copyArr[1] = !copyArr[1];
-    this.setState({ checked: copyArr });
+    copyArr[idx] = !copyArr[idx];
+    this.setState({ checked: copyArr, removeError: false });
+  }
+
+  toggleForm() {
+    this.setState({
+      formActive: !this.state.formActive,
+      removeError: false,
+      requiredError: false,
+    });
   }
 
   handleUpdate(event) {
@@ -51,9 +62,20 @@ export default class Home extends React.Component {
       data: [...data, this.state.formInput],
       checked: [...checked, false],
       formInput: {},
+      formActive: false,
+      requiredError: false,
     });
   }
-  handleRemove(event) {}
+  handleRemove(event) {
+    if (this.state.checked.every((elm) => !elm)) {
+      this.setState({ removeError: true });
+    } else {
+      const filteredData = this.state.data.filter(
+        (elm, idx) => this.state.checked[idx] === false
+      );
+      this.setState({ data: filteredData });
+    }
+  }
 
   async componentDidMount() {
     try {
@@ -71,8 +93,15 @@ export default class Home extends React.Component {
   }
 
   render() {
-    const { data, checked, formInput, loaded, requiredError, removeError } =
-      this.state;
+    const {
+      data,
+      checked,
+      formInput,
+      loaded,
+      formActive,
+      requiredError,
+      removeError,
+    } = this.state;
     console.log(data);
     return (
       <div>
@@ -82,11 +111,17 @@ export default class Home extends React.Component {
           toggleAllChecks={this.toggleAllChecks}
           toggleOneCheck={this.toggleOneCheck}
         />
-        <NewDebtForm
-          formInput={formInput}
-          handleUpdate={this.handleUpdate}
-          handleSubmit={this.handleSubmit}
-        />
+        {removeError && <div className="error">Select a row to remove.</div>}
+        <button onClick={this.toggleForm}>Add Debt</button>
+        <button onClick={this.handleRemove}>Remove Debt</button>
+        {formActive && (
+          <NewDebtForm
+            formInput={formInput}
+            requiredError={requiredError}
+            handleUpdate={this.handleUpdate}
+            handleSubmit={this.handleSubmit}
+          />
+        )}
         <div>
           <div>
             $
@@ -99,8 +134,6 @@ export default class Home extends React.Component {
             {checked.filter((elm) => elm === true).length}
           </div>
         </div>
-        <button onClick={this.toggleOneCheck}>Toggle One</button>
-        <button onClick={this.toggleAllChecks}>Toggle All</button>
       </div>
     );
   }
