@@ -21,7 +21,6 @@ export default class Home extends React.Component {
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
-    // this.formValidation = this.formValidation.bind(this);
   }
 
   toggleAllChecks() {
@@ -125,22 +124,20 @@ export default class Home extends React.Component {
           <NewDebtForm
             formInput={formInput}
             formError={formError}
+            toggleForm={this.toggleForm}
             handleUpdate={this.handleUpdate}
             handleSubmit={this.handleSubmit}
           />
         )}
-        <div className="button-container">
-          {formActive && <button onClick={this.handleSubmit}>Add</button>}
-          <button onClick={this.toggleForm}>
-            {(formActive && 'Cancel') || 'Add Debt'}
-          </button>
-          {!formActive && (
+        {!formActive && (
+          <div className="button-container">
+            <button onClick={this.toggleForm}>Add Debt</button>
             <button onClick={this.handleRemove}>Remove Debt</button>
-          )}
-        </div>
+          </div>
+        )}
         <div className="total-container">
           <div>Total</div>
-          <div className="total">
+          <div>
             $
             {data
               .filter((elm, idx) => checked[idx])

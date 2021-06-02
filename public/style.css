@@ -1,9 +1,12 @@
+/* Table Components */
+
 table {
   width: auto;
 }
 th {
   border: 1.75px solid rgb(44, 44, 44);
   background-color: rgb(223, 223, 223);
+  min-width: 120px;
 }
 
 td {
@@ -13,16 +16,8 @@ td {
   border-width: 0 1px 1px 0;
 }
 
-.contents-container {
-  width: 600px;
-  margin: 20px;
-}
-
 .table-container {
   width: auto;
-}
-.table-container th {
-  width: 120px;
 }
 
 .num-field {
@@ -33,32 +28,60 @@ td {
   border: none;
   background-color: white;
 }
+
 .left-border {
   border-color: gray;
   border-style: solid;
   border-width: 0 1px 1px 1px;
+  font-size: 0.8rem;
+}
+
+.selected {
+  background-color: rgb(235, 243, 255);
+}
+
+/* NewDebtForm Components */
+
+.field-container {
+  margin-left: 41px;
+}
+
+.field-container input {
+  margin: 3px 0 3px 2.5px;
+  width: 118px;
+  line-height: 20px;
+}
+
+/* Home Components */
+
+.contents-container {
+  width: 685px;
+  margin: 20px;
 }
 
 .button-container {
   margin: 7px 0;
 }
 
-.button-container button {
+.button-container button,
+.button-container input {
   margin: 0 5px 0 0;
+  background-color: royalblue;
+  line-height: 20px;
+  border-radius: 3px;
+  border-color: royalblue;
+  color: whitesmoke;
 }
 
 .total-container {
   display: flex;
   justify-content: space-between;
-  background-color: rgb(148, 191, 255);
+  background-color: rgb(170, 204, 253);
 }
 
 .total-container div {
-  margin: 3px 15px;
-}
-
-.total {
-  font-size: 1.2rem;
+  margin: 3px 15px 2px;
+  font-size: 1.1rem;
 }
 
 .count-container {
@@ -66,10 +89,7 @@ td {
 }
 
 .count-container div {
-  margin: 0 50px 0 0;
-}
-.selected {
-  background-color: rgb(217, 239, 247);
+  margin: 2px 50px 0 0;
 }
 
 .error {
