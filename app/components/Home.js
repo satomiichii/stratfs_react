@@ -23,6 +23,13 @@ export default class Home extends React.Component {
     this.handleRemove = this.handleRemove.bind(this);
   }
 
+  toggleOneCheck(event) {
+    const idx = event.target.value;
+    const copyArr = [...this.state.checked];
+    copyArr[idx] = !copyArr[idx];
+    this.setState({ checked: copyArr, removeError: false });
+  }
+
   toggleAllChecks() {
     let copyArr = [...this.state.checked];
     if (copyArr.every((elm) => !elm) || copyArr.every((elm) => elm)) {
@@ -33,18 +40,10 @@ export default class Home extends React.Component {
     this.setState({ checked: copyArr, removeError: false });
   }
 
-  toggleOneCheck(event) {
-    const idx = event.target.value;
-    const copyArr = [...this.state.checked];
-    copyArr[idx] = !copyArr[idx];
-    this.setState({ checked: copyArr, removeError: false });
-  }
-
   toggleForm() {
     this.setState({
       formActive: !this.state.formActive,
       removeError: false,
-      formError: {},
     });
   }
 
@@ -67,7 +66,6 @@ export default class Home extends React.Component {
       nextId: this.state.nextId + 1,
       formInput: {},
       formActive: false,
-      formError: {},
     });
   }
 
@@ -101,18 +99,12 @@ export default class Home extends React.Component {
   }
 
   render() {
-    const {
-      data,
-      checked,
-      formInput,
-      loaded,
-      formActive,
-      formError,
-      removeError,
-    } = this.state;
+    const { data, checked, formInput, loaded, formActive, removeError } =
+      this.state;
 
     return (
       <div className="contents-container">
+        {!loaded && <div>LOADING</div>}
         <Table
           data={data}
           checked={checked}
@@ -120,16 +112,14 @@ export default class Home extends React.Component {
           toggleOneCheck={this.toggleOneCheck}
         />
         {removeError && <div className="error">select a row to remove</div>}
-        {formActive && (
+        {(formActive && (
           <NewDebtForm
             formInput={formInput}
-            formError={formError}
             toggleForm={this.toggleForm}
             handleUpdate={this.handleUpdate}
             handleSubmit={this.handleSubmit}
           />
-        )}
-        {!formActive && (
+        )) || (
           <div className="button-container">
             <button onClick={this.toggleForm}>Add Debt</button>
             <button onClick={this.handleRemove}>Remove Debt</button>

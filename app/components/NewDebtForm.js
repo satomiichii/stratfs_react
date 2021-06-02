@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const NewDebtForm = (props) => {
-  console.log(props);
   return (
     <div>
       <form onSubmit={props.handleSubmit}>
@@ -38,11 +37,6 @@ export const NewDebtForm = (props) => {
           <input type="button" value="Cancel" onClick={props.toggleForm} />
         </div>
       </form>
-      <div className="formError-container">
-        <div>{props.formError.creditorName || ''}</div>
-        <div>{props.formError.minPaymentPercentage || ''}</div>
-        <div>{props.formError.balance || ''}</div>
-      </div>
     </div>
   );
 };
