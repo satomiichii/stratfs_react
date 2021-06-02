@@ -20,6 +20,7 @@ export default class Home extends React.Component {
     this.toggleForm = this.toggleForm.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   toggleAllChecks() {
@@ -71,9 +72,10 @@ export default class Home extends React.Component {
       this.setState({ removeError: true });
     } else {
       const filteredData = this.state.data.filter(
-        (elm, idx) => this.state.checked[idx] === false
+        (elm, idx) => !this.state.checked[idx]
       );
-      this.setState({ data: filteredData });
+      const filterdCheck = this.state.checked.filter((elm) => !elm);
+      this.setState({ data: filteredData, checked: filterdCheck });
     }
   }
 
