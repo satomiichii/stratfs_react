@@ -53,15 +53,18 @@ export default class Home extends React.Component {
 
   handleUpdate(event) {
     this.setState({
-      formInput: { ...formInput, [event.target.name]: event.target.value },
+      formInput: {
+        ...this.state.formInput,
+        [event.target.name]: event.target.value,
+      },
     });
   }
 
   handleSubmit(event) {
     event.preventDefault();
     this.setState({
-      data: [...data, this.state.formInput],
-      checked: [...checked, false],
+      data: [...this.state.data, this.state.formInput],
+      checked: [...this.state.checked, false],
       formInput: {},
       formActive: false,
       requiredError: false,
@@ -104,7 +107,6 @@ export default class Home extends React.Component {
       requiredError,
       removeError,
     } = this.state;
-    console.log(data);
     return (
       <div>
         <Table
@@ -113,9 +115,7 @@ export default class Home extends React.Component {
           toggleAllChecks={this.toggleAllChecks}
           toggleOneCheck={this.toggleOneCheck}
         />
-        {removeError && <div className="error">Select a row to remove.</div>}
-        <button onClick={this.toggleForm}>Add Debt</button>
-        <button onClick={this.handleRemove}>Remove Debt</button>
+        {removeError && <div className="error">select a row to remove.</div>}
         {formActive && (
           <NewDebtForm
             formInput={formInput}
@@ -124,6 +124,10 @@ export default class Home extends React.Component {
             handleSubmit={this.handleSubmit}
           />
         )}
+        <button onClick={this.toggleForm}>
+          {(formActive && 'Cancel') || 'Add Debt'}
+        </button>
+        <button onClick={this.handleRemove}>Remove Debt</button>
         <div>
           <div>
             $
