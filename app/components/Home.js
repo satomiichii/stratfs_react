@@ -9,10 +9,10 @@ export default class Home extends React.Component {
     this.state = {
       data: [],
       checked: [],
+      nextId: 0,
       formInput: {},
       loaded: false,
       formActive: false,
-      requiredError: false,
       removeError: false,
     };
     this.toggleOneCheck = this.toggleOneCheck.bind(this);
@@ -21,14 +21,12 @@ export default class Home extends React.Component {
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
+    // this.formValidation = this.formValidation.bind(this);
   }
 
   toggleAllChecks() {
     let copyArr = [...this.state.checked];
-    if (
-      this.state.checked.every((elm) => !elm) ||
-      this.state.checked.every((elm) => elm)
-    ) {
+    if (copyArr.every((elm) => !elm) || copyArr.every((elm) => elm)) {
       copyArr = copyArr.map((elm) => !elm);
     } else {
       copyArr = copyArr.map((elm) => true);
@@ -47,7 +45,7 @@ export default class Home extends React.Component {
     this.setState({
       formActive: !this.state.formActive,
       removeError: false,
-      requiredError: false,
+      formError: {},
     });
   }
 
@@ -62,14 +60,18 @@ export default class Home extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    const copyObj = { ...this.state.formInput };
+    copyObj.id = this.state.nextId;
     this.setState({
-      data: [...this.state.data, this.state.formInput],
+      data: [...this.state.data, copyObj],
       checked: [...this.state.checked, false],
+      nextId: this.state.nextId + 1,
       formInput: {},
       formActive: false,
-      requiredError: false,
+      formError: {},
     });
   }
+
   handleRemove(event) {
     if (this.state.checked.every((elm) => !elm)) {
       this.setState({ removeError: true });
@@ -87,9 +89,11 @@ export default class Home extends React.Component {
       const { data } = await axios.get(
         'https://raw.githubusercontent.com/StrategicFS/Recruitment/master/data.json'
       );
+      const lastId = Number(data[data.length - 1].id);
       this.setState({
         data,
         checked: new Array(data.length).fill(false),
+        nextId: lastId + 1,
         loaded: true,
       });
     } catch (error) {
@@ -104,41 +108,51 @@ export default class Home extends React.Component {
       formInput,
       loaded,
       formActive,
-      requiredError,
+      formError,
       removeError,
     } = this.state;
+
     return (
-      <div>
+      <div className="contents-container">
         <Table
           data={data}
           checked={checked}
           toggleAllChecks={this.toggleAllChecks}
           toggleOneCheck={this.toggleOneCheck}
         />
-        {removeError && <div className="error">select a row to remove.</div>}
+        {removeError && <div className="error">select a row to remove</div>}
         {formActive && (
           <NewDebtForm
             formInput={formInput}
-            requiredError={requiredError}
+            formError={formError}
             handleUpdate={this.handleUpdate}
             handleSubmit={this.handleSubmit}
           />
         )}
-        <button onClick={this.toggleForm}>
-          {(formActive && 'Cancel') || 'Add Debt'}
-        </button>
-        <button onClick={this.handleRemove}>Remove Debt</button>
-        <div>
-          <div>
+        <div className="button-container">
+          {formActive && <button onClick={this.handleSubmit}>Add</button>}
+          <button onClick={this.toggleForm}>
+            {(formActive && 'Cancel') || 'Add Debt'}
+          </button>
+          {!formActive && (
+            <button onClick={this.handleRemove}>Remove Debt</button>
+          )}
+        </div>
+        <div className="total-container">
+          <div>Total</div>
+          <div className="total">
             $
             {data
               .filter((elm, idx) => checked[idx])
-              .reduce((acc, elm) => acc + elm.balance, 0)}
+              .reduce((acc, elm) => acc + Number(elm.balance), 0)
+              .toFixed(2)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           </div>
-          <div>
-            Total Row Count: {data.length} Check Row Count:{' '}
-            {checked.filter((elm) => elm === true).length}
-          </div>
+        </div>
+        <div className="count-container">
+          <div>Total Row Count: {data.length}</div>
+          <div>Check Row Count: {checked.filter((elm) => elm).length}</div>
         </div>
       </div>
     );

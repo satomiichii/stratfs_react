@@ -6,8 +6,12 @@ export const Table = (props) => {
       <table>
         <thead>
           <tr>
-            <td>
-              <input type="checkbox" onChange={props.toggleAllChecks} />
+            <td className="no-border">
+              <input
+                type="checkbox"
+                onChange={props.toggleAllChecks}
+                checked={props.checked.every((elm) => elm)}
+              />
             </td>
             <th>Creditor</th>
             <th>First Name</th>
@@ -18,8 +22,11 @@ export const Table = (props) => {
         </thead>
         <tbody>
           {props.data.map((debt, idx) => (
-            <tr key={debt.id}>
-              <td>
+            <tr
+              key={debt.id}
+              className={(props.checked[idx] && 'selected') || ''}
+            >
+              <td className="no-border">
                 <input
                   type="checkbox"
                   checked={props.checked[idx]}
@@ -27,11 +34,18 @@ export const Table = (props) => {
                   onChange={props.toggleOneCheck}
                 />
               </td>
-              <td>{debt.creditorName}</td>
+              <td className="left-border">{debt.creditorName}</td>
               <td>{debt.firstName}</td>
               <td>{debt.lastName}</td>
-              <td>{debt.minPaymentPercentage}</td>
-              <td>{debt.balance}</td>
+              <td className="num-field">
+                {Number(debt.minPaymentPercentage).toFixed(2)}%
+              </td>
+              <td className="num-field">
+                {Number(debt.balance)
+                  .toFixed(2)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              </td>
             </tr>
           ))}
         </tbody>
