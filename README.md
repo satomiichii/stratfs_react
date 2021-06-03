@@ -8,3 +8,5 @@ $ npm run start
 ```
 
 ## Video walkthrough
+
+https://www.youtube.com/watch?v=sRc0BZdhebA
